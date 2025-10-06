@@ -6,6 +6,7 @@ function App() {
   const [array, setArray] = useState([]);
   const [Active, SetActive] = useState("All");
   const [filtered, setFiltered] = useState(array);
+  const completedTasks = array.filter((cur) => cur.done).length;
 
   useEffect(() => {
     if (Active === "All") {
@@ -23,9 +24,13 @@ function App() {
       setText("");
     }
   }
-  function HandleDelete(id) {
+  function handleDelete(id) {
     const filtered = array.filter((item) => item.id !== id);
     setArray(filtered);
+  }
+  function handleClear() {
+    const clear = array.filter((cur) => !cur.done);
+    setArray(clear);
   }
 
   return (
@@ -37,6 +42,11 @@ function App() {
           onChange={(e) => setText(e.target.value)}
           value={text}
           placeholder="Add a new task..."
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleAdd();
+            }
+          }}
         />
 
         <button className="Addbtn inter" onClick={handleAdd}>
@@ -89,7 +99,7 @@ function App() {
               <div className={cur.done ? "strikethrough" : ""}>{cur.text}</div>
               <button
                 className="deleteBtn"
-                onClick={() => HandleDelete(cur.id)}
+                onClick={() => handleDelete(cur.id)}
               >
                 Delete
               </button>
@@ -99,8 +109,12 @@ function App() {
       })}
       {array.length > 0 && (
         <div className="footer">
-          <div>gdfjhdsgj</div>
-          <div className="clearbtn">Clear Completed</div>
+          <div>
+            {completedTasks} of {array.length} tasks completed{" "}
+          </div>
+          <button className="clearbtn" onClick={handleClear}>
+            Clear Completed
+          </button>
         </div>
       )}
     </>
